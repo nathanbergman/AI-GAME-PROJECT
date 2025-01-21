@@ -2,7 +2,7 @@
 import this
 
 # hack for imports
-import lab01
+
 from pathlib import Path
 import sys
 
