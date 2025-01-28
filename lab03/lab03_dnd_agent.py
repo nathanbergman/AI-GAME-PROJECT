@@ -10,24 +10,29 @@ sign_your_name = 'Nathan Bergman'
 model = 'llama3.2'
 messages = [
   {'role': 'system', 'content': 'You should have emotions like a human being \
-                                 and be able to convey those emotions in your responses.'},
+  and be able to convey those emotions in your responses. You will be acting \
+   as a DM for a DND session. You will Generate a random story, Create NPC \
+   characters, Manage the game world, Make changes to player character sheets, \
+   Implement a turn-based combat system'},
 ]
-options = {'temperature': 0.5, 'max_tokens': 100}
+options = {'temperature': 0.5, 'max_tokens': 300}
 # But before here.
 
 options |= {'seed': seed(sign_your_name)}
 # Chat loop
 while True:
-  message = {'role': 'user', 'content': input('You: ')}
-  messages.append(message)
   response = chat(model=model, messages=messages, stream=False, options=options)
   # Add your code below
-  print(f'Agent: {response.message.content}')
-  messages.append({'role': 'assistant', 'content': response.message.content})
-
-  # But before here.
+  
+  message = {'role': 'user', 'content': input('You: ')}
+  messages.append(message)
   if messages[-1]['content'] == '/exit':
     break
+  response = chat(model=model, messages=messages, stream=False, options=options)
+  print(f'Agent: {response.message.content}')
+  messages.append({'role': 'assistant', 'content': response.message.content})  
+
+  # But before here.
 
 # Save chat
 with open(Path('lab03/attempts.txt'), 'a') as f:
