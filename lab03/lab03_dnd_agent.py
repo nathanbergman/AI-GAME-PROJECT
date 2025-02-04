@@ -15,7 +15,8 @@ messages = [
    characters, Manage the game world, Make changes to player character sheets, \
    Implement a turn-based combat system'},
 ]
-options = {'temperature': 0.5, 'max_tokens': 300}
+options = {'temperature': 0.7, 'max_tokens': 300}
+CHAT_HISTORY_FILE = Path('lab03/attempts.txt')
 # But before here.
 
 options |= {'seed': seed(sign_your_name)}
