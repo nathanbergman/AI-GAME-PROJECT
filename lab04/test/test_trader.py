@@ -10,8 +10,12 @@ from util.llm_utils import TemplateChat
 from lab04.lab04 import lab04_params
 
 def load_test_data(file_path="lab04/test/test_scenarios.json"):
+    file_path = Path(__file__).parents[2] / file_path
     with open(Path(file_path), 'r') as f:
         return json.load(f)
+
+def fix_json_string(result):
+    return result.replace("'", '"')
 
 @pytest.mark.parametrize("scenario", load_test_data())
 def test_scenario(scenario):
@@ -25,7 +29,7 @@ def test_scenario(scenario):
     ask = scenario["ask"]
     expected_response = scenario["response"]
 
-    customer_template_file = 'lab04/test/customer_chat.json'
+    customer_template_file = 'customer_chat.json'
     customer = TemplateChat.from_file(customer_template_file, sign='Pulin', ask=ask)
     lab04_params['inventory']= inventory
     trader = TemplateChat.from_file(**lab04_params)
@@ -44,10 +48,11 @@ def test_scenario(scenario):
             result = e.value[1]
             break
 
+    result_fixed = fix_json_string(result)
     # Compare to what we expect
-    print('Output: ',result)
+    print('Output: ',result_fixed)
     print('Expected: ',expected_response)
-    assert not diff(json.loads(result), expected_response)
+    assert not diff(json.loads(result_fixed), expected_response)
 
 if __name__ == "__main__":
     test_scenario(
