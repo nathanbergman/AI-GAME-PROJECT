@@ -36,7 +36,7 @@ while True:
   # But before here.
 
 # Save chat
-with open(Path('lab03/attempts.txt'), 'a') as f:
+with open(Path('Project/attempts.txt'), 'a') as f:
   file_string  = ''
   file_string +=       '-------------------------NEW ATTEMPT-------------------------\n\n\n'
   file_string += f'Model: {model}\n'
