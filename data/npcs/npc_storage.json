@@ -1,0 +1,14 @@
+{
+  "elder_librarian": {
+    "name": "Elder Librarian",
+    "background": "Ancient keeper of forbidden knowledge",
+    "personality": "Cautious but helpful, speaks in riddles",
+    "memories": []
+  },
+  "Guard": {
+    "name": "Gorak the Dumb",
+    "background": "Orcish Guard",
+    "personality": "Brusque but honest, dislikes small talk",
+    "memories": []
+  }
+}
