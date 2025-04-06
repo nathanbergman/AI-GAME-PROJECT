@@ -25,14 +25,3 @@ def load_game(filename=DEFAULT_SAVE_PATH):
     except Exception as e:
         print(f"Error loading game: {e}")
         return None
-
-
-def delete_save(filename=DEFAULT_SAVE_PATH):
-    try:
-        if os.path.exists(filename):
-            os.remove(filename)
-            return True
-        return False
-    except Exception as e:
-        print(f"Error deleting save: {e}")
-        return False

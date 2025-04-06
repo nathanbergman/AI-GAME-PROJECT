@@ -4,7 +4,6 @@ from character import Player
 from dungeon import Dungeon
 from file_manager import FileManager
 from game_state import save_game, load_game
-from generators.generate_rooms import RoomGenerator
 from generators.smart_dungeon_gen import SmartDungeonGenerator
 from ollama_integration import interactive_dialogue, generate_dialogue
 from ai_systems.npc import NPCHandler
@@ -45,11 +44,9 @@ class DungeonMaster:
             player_name = input("Please enter a valid name: ").strip()
 
         self.player = Player(player_name)
-        self.dungeon = Dungeon()
-        self.room_generator = RoomGenerator(self.dungeon)
         self.current_room = self.dungeon.get_room("entrance")
         self.game_active = True
-        self.discovered_rooms = set([self.current_room['id']])
+        self.discovered_rooms = {self.current_room['id']}
 
         print(f"\nWelcome, {player_name}! Your adventure begins...")
         time.sleep(1)
@@ -87,7 +84,7 @@ class DungeonMaster:
                                      if isinstance(item, dict) and 'id' in item]
 
             self.dungeon = Dungeon()
-            self.room_generator = RoomGenerator(self.dungeon)
+            self.room_generator = SmartDungeonGenerator(self.dungeon)
 
             if 'discovered_rooms' in data:
                 for room_id in data['discovered_rooms']:
