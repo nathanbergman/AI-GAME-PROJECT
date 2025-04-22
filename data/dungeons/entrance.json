@@ -1,0 +1,12 @@
+{
+    "id": "entrance",
+    "name": "Dungeon Entrance",
+    "description": "A massive stone archway marks the entrance to the dungeon.",
+    "type": "entrance",
+    "exits": {
+        "north": "hallway1"
+    },
+    "items": ["torch"],
+    "features": ["carved runes", "flickering torches"],
+    "npcs": []
+}

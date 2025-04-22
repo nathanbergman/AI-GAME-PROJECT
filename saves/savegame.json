@@ -1,0 +1,16 @@
+{
+  "player": {
+    "name": "Monkey",
+    "health": 100,
+    "max_health": 100,
+    "base_attack": 10,
+    "base_defense": 5,
+    "inventory": [],
+    "experience": 0,
+    "level": 1
+  },
+  "current_room": "entrance",
+  "discovered_rooms": [
+    "entrance"
+  ]
+}

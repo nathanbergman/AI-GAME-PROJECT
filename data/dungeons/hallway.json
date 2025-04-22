@@ -1,0 +1,11 @@
+{
+    "id": "hallway1",
+    "type": "hallway",
+    "name": "Dark Hallway",
+    "description": "A narrow hallway stretching into darkness. The floor is slick with moisture.",
+    "exits": {
+        "west": "chamber1"
+    },
+    "items": [],
+    "npcs": []
+}
