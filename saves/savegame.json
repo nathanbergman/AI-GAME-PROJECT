@@ -1,6 +1,7 @@
 {
   "player": {
-    "name": "Monkey",
+    "name": "Jack",
+    "class": "Fighter",
     "health": 100,
     "max_health": 100,
     "base_attack": 10,

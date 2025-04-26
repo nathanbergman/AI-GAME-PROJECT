@@ -42,8 +42,20 @@ class DungeonMaster:
         player_name = input("Enter your character's name: ").strip()
         while not player_name:
             player_name = input("Please enter a valid name: ").strip()
+        ## Choose from one of three classes, with error checking
+        print("Classes:\n1.Fighter\n2.Wizard\n3.Paladin\n\nChoose a character class: ")
+        while True: 
+            try: 
+                player_class_int = int(input())
+                while not player_class_int or player_class_int <= 0 or player_class_int > 3:
+                    player_class_int = int(input("Please enter a valid number: "))
+                break
+            except ValueError:
+                print("That is not a number!")
+        ##class array
+        Classes = ["Fighter", "Wizard", "Paladin"]
 
-        self.player = Player(player_name)
+        self.player = Player(player_name, Classes[player_class_int-1])
         self.current_room = self.dungeon.get_room("entrance")
         self.game_active = True
         self.discovered_rooms = {self.current_room['id']}
@@ -734,6 +746,7 @@ Tip: Many commands can be abbreviated (n/s/e/w, inv, exa)
         save_data = {
             'player': {
                 'name': self.player.name,
+                'class': self.player.className,
                 'health': self.player.health,
                 'max_health': self.player.max_health,
                 'base_attack': self.player.base_attack,

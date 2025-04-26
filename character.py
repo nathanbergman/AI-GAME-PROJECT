@@ -40,12 +40,13 @@ class Character:
 
 
 class Player(Character):
-    def __init__(self, name):
+    def __init__(self, name, player_class):
         super().__init__(name)
         self.experience = 0
         self.level = 1
         self.quests = []
-
+        self.className = player_class
+        print(f"\n===I am a {self.className}===")
     def add_experience(self, amount):
         self.experience += amount
         if self.experience >= self.level * 100:
