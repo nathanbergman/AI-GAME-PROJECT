@@ -1,5 +1,12 @@
 {
-  "1": {
-    "health":  10
-  }
+  "details": {
+    "Description": "Soldier that is on the front lines",
+    "Name": "Fighter"
+  },
+  "LevelUps": [
+    {
+      "health": 10,
+      "defense": 1
+    }
+  ]
 }

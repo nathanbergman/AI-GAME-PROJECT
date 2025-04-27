@@ -1,3 +1,7 @@
+from file_manager import FileManager
+from pathlib import Path
+import json
+
 class Character:
     def __init__(self, name, health=100, attack=10, defense=5):
         self.name = name
@@ -38,15 +42,21 @@ class Character:
             damage += self.equipped['weapon'].get('attack_bonus', 0)
         return target.take_damage(damage)
 
-
+#C:\Users\explo\OneDrive\Documents\GitHub\AI-GAME-PROJECT\Classes\Fighter.JSON 
 class Player(Character):
     def __init__(self, name, player_class):
         super().__init__(name)
+      
+        self.file_manager = FileManager()
         self.experience = 0
         self.level = 1
         self.quests = []
         self.className = player_class
-        print(f"\n===I am a {self.className}===")
+        self.ClassFile = open(Path(r'../AI-GAME-PROJECT/Classes',self.className + '.JSON'))
+        self.Classdata = json.load(self.ClassFile)
+
+        self.desc = self.Classdata['details']['Description']
+        print(f"desc: {self.desc}")
     def add_experience(self, amount):
         self.experience += amount
         if self.experience >= self.level * 100:
