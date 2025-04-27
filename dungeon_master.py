@@ -78,7 +78,7 @@ class DungeonMaster:
             return
 
         try:
-            self.player = Player(data['player']['name'])
+            self.player = Player(data['player']['name'], data['player']['class'])
             stats = {
                 'health': (100, 200),
                 'max_health': (100, 200),
@@ -511,6 +511,8 @@ Tip: Many commands can be abbreviated (n/s/e/w, inv, exa)
         output = "=== CHARACTER SHEET ===\n"
         output = f"{output}\n Name: {self.player.name}"
         output = f"{output}\n Class: {self.player.className}\n Level : {self.player.level}\n Experience: {self.player.experience}"
+        if self.player.max_mana > 0:
+            output = f"{output}\n Mana: {self.player.mana}/{self.player.max_mana}"
         output = f"{output}\n Attack: {self.player.base_attack}"
         output = f"{output}\n Defense: {self.player.base_defense}"
 

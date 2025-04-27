@@ -1,9 +1,9 @@
 {
   "player": {
-    "name": "1",
-    "class": "Fighter",
-    "health": 100,
-    "max_health": 100,
+    "name": "Ivan",
+    "class": "Paladin",
+    "health": 120,
+    "max_health": 120,
     "base_attack": 10,
     "base_defense": 5,
     "inventory": [],

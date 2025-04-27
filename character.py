@@ -42,7 +42,7 @@ class Character:
             damage += self.equipped['weapon'].get('attack_bonus', 0)
         return target.take_damage(damage)
 
-#C:\Users\explo\OneDrive\Documents\GitHub\AI-GAME-PROJECT\Classes\Fighter.JSON 
+
 class Player(Character):
     def __init__(self, name, player_class):
         super().__init__(name)
@@ -51,7 +51,9 @@ class Player(Character):
         self.experience = 0
         self.level = 1
         self.quests = []
-        self.mana = 0
+        self.max_mana = 0
+        self.mana = self.max_mana
+        
         self.className = player_class
         self.ClassFile = open(Path(r"../AI-GAME-PROJECT/Classes",self.className + ".JSON"))
         self.Classdata = json.load(self.ClassFile)
@@ -76,10 +78,15 @@ class Player(Character):
         if self.Classdata["details"]["max_Level"] < level:
             print("Class has been leveled fully!")
             return
-
+ 
         self.max_health += self.Classdata["LevelUps"][level]["health"]
         self.health = self.max_health
-
+        self.base_defense += self.Classdata["LevelUps"][level]["defense"]
+        self.base_attack+= self.Classdata["LevelUps"][level]["attack"]
+        #Mana
+        if self.Classdata["LevelUps"][level].get("mana"):
+            self.max_mana += self.Classdata["LevelUps"][level]["mana"]
+            self.mana = self.max_mana
 
     def __del__(self):
         print('Destructor called, Player deleted.')
