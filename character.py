@@ -51,12 +51,14 @@ class Player(Character):
         self.experience = 0
         self.level = 1
         self.quests = []
+        self.mana = 0
         self.className = player_class
-        self.ClassFile = open(Path(r'../AI-GAME-PROJECT/Classes',self.className + '.JSON'))
+        self.ClassFile = open(Path(r"../AI-GAME-PROJECT/Classes",self.className + ".JSON"))
         self.Classdata = json.load(self.ClassFile)
 
-        self.desc = self.Classdata['details']['Description']
-        print(f"desc: {self.desc}")
+        self.desc = self.Classdata["details"]["Description"]
+        self.class_level_up(self.level)
+
     def add_experience(self, amount):
         self.experience += amount
         if self.experience >= self.level * 100:
@@ -68,4 +70,17 @@ class Player(Character):
         self.health = self.max_health
         self.base_attack += 2
         self.base_defense += 1
+        self.class_level_up(self.level)
         print(f"\nLEVEL UP! You are now level {self.level}!")
+    def class_level_up(self, level):
+        if self.Classdata["details"]["max_Level"] < level:
+            print("Class has been leveled fully!")
+            return
+
+        self.max_health += self.Classdata["LevelUps"][level]["health"]
+        self.health = self.max_health
+
+
+    def __del__(self):
+        print('Destructor called, Player deleted.')
+        self.ClassFile.close()

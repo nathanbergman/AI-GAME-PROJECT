@@ -1,11 +1,17 @@
 {
   "details": {
     "Description": "Soldier that is on the front lines",
+    "max_Level": 0,
     "Name": "Fighter"
   },
   "LevelUps": [
     {
+      "message":  "Level 0 has no data"
+      
+    },
+    {
       "health": 10,
+  
       "defense": 1
     }
   ]

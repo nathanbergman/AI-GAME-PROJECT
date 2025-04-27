@@ -201,7 +201,9 @@ class DungeonMaster:
             return self.equip_item(cmd[6:].strip())
         elif cmd.startswith('examine '):
             return self.examine_item(cmd[8:].strip())
-
+        #character Sheet
+        elif cmd == 'sheet':
+            return self.show_sheet()
         # Exploration
         elif cmd == 'search':
             return self.search_room()
@@ -247,6 +249,7 @@ class DungeonMaster:
         elif cmd == 'help':
             return self.show_help()
 
+        
         else:
             similar = self.find_similar_commands(cmd)
             if similar:
@@ -479,6 +482,9 @@ Inventory:
   equip [item]          - Equip gear
   examine [item]        - Inspect items
 
+Character Sheet:
+sheet                   - Examine your character
+
 Combat:
   attack                - Basic attack
   block                 - Raise defense
@@ -501,7 +507,15 @@ Game:
 
 Tip: Many commands can be abbreviated (n/s/e/w, inv, exa)
     """
+    def show_sheet(self):
+        output = "=== CHARACTER SHEET ===\n"
+        output = f"{output}\n Name: {self.player.name}"
+        output = f"{output}\n Class: {self.player.className}\n Level : {self.player.level}\n Experience: {self.player.experience}"
+        output = f"{output}\n Attack: {self.player.base_attack}"
+        output = f"{output}\n Defense: {self.player.base_defense}"
 
+        output = f"{output}\n Health: {self.player.health}/{self.player.max_health}"
+        return output
     def show_inventory(self):
             if not self.player.inventory:
                 return "Your inventory is empty."
