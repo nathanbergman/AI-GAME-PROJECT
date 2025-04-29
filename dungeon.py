@@ -1,14 +1,17 @@
 from file_manager import FileManager
 from item_system import ItemSystem
+from npc.npc_handler import NPCHandler
 import random
-
+#import npc_storage
 class Dungeon:
     def __init__(self, file_manager: FileManager = None):
         self.file_manager = file_manager or FileManager()
         self.rooms = self.load_rooms()
         self.item_system = ItemSystem()
+        self.NPCHandler = NPCHandler()
         self.dynamic_rooms = {}
         self._ensure_entrance_exists()
+        
 
     def _ensure_entrance_exists(self):
         if "entrance" not in self.rooms:
@@ -151,7 +154,14 @@ class Dungeon:
         except Exception as e:
             print(f"Error getting item {item_id}: {e}")
             return None
-
+    def get_npc(self, npc_id):
+        try:
+            
+            return npc_id
+        except Exception as e:
+            print(f"Error getting npc {npc_id}: {e}")
+            return None
+    
     def save_dynamic_rooms(self):
         for room_id, room in self.dynamic_rooms.items():
             try:

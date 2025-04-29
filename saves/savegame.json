@@ -1,17 +1,19 @@
 {
   "player": {
-    "name": "Ivan",
-    "class": "Paladin",
-    "health": 120,
-    "max_health": 120,
+    "name": "1",
+    "class": "Fighter",
+    "health": 140,
+    "max_health": 140,
     "base_attack": 10,
-    "base_defense": 5,
+    "base_defense": 7,
     "inventory": [],
     "experience": 0,
     "level": 1
   },
-  "current_room": "entrance",
+  "current_room": "hallway_5590",
   "discovered_rooms": [
-    "entrance"
+    "hallway_5590",
+    "entrance",
+    "hallway1"
   ]
 }

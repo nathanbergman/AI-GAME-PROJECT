@@ -46,11 +46,15 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 8,
+          "SelectedChildIndex": 9,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
             },
             {
               "$type": "Document",
@@ -60,9 +64,10 @@
               "RelativeDocumentMoniker": "Classes\\Fighter.JSON",
               "ToolTip": "C:\\Users\\explo\\OneDrive\\Documents\\GitHub\\AI-GAME-PROJECT\\Classes\\Fighter.JSON",
               "RelativeToolTip": "Classes\\Fighter.JSON",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAQAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-04-26T06:16:27.858Z"
+              "WhenOpened": "2025-04-26T06:16:27.858Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -132,9 +137,10 @@
               "RelativeDocumentMoniker": "dungeon.py",
               "ToolTip": "C:\\Users\\explo\\OneDrive\\Documents\\GitHub\\AI-GAME-PROJECT\\dungeon.py",
               "RelativeToolTip": "dungeon.py",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAACQAAAA3AAAAAAAAAA==",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAACQAAAA3AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002457|",
-              "WhenOpened": "2025-04-26T05:32:28.598Z"
+              "WhenOpened": "2025-04-26T05:32:28.598Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -144,7 +150,7 @@
               "RelativeDocumentMoniker": "character.py",
               "ToolTip": "C:\\Users\\explo\\OneDrive\\Documents\\GitHub\\AI-GAME-PROJECT\\character.py",
               "RelativeToolTip": "character.py",
-              "ViewState": "AgIAABgAAAAAAAAAAAAAADYAAAA3AAAAAAAAAA==",
+              "ViewState": "AgIAADYAAAAAAAAAAAAAAE4AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002457|",
               "WhenOpened": "2025-04-26T05:32:18.23Z",
               "EditorCaption": ""
@@ -157,9 +163,10 @@
               "RelativeDocumentMoniker": "dungeon_master.py",
               "ToolTip": "C:\\Users\\explo\\OneDrive\\Documents\\GitHub\\AI-GAME-PROJECT\\dungeon_master.py",
               "RelativeToolTip": "dungeon_master.py",
-              "ViewState": "AgIAAFEAAAAAAAAAAAAqwHMAAAAjAAAAAAAAAA==",
+              "ViewState": "AgIAAOsBAAAAAAAAAAAAAAMCAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002457|",
-              "WhenOpened": "2025-04-26T05:20:43.977Z"
+              "WhenOpened": "2025-04-26T05:20:43.977Z",
+              "EditorCaption": ""
             }
           ]
         }
