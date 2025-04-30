@@ -1,12 +1,10 @@
 {
-    "id": "chamber1",
-    "type": "chamber",
-    "name": "Ancient Chamber",
-    "description": "A dusty stone chamber with strange carvings on the walls. The air smells of damp earth and something metallic.",
-    "exits": {
-        "north": "entrance",
-        "east": "hallway1"
-    },
-    "items": ["rusty_sword"],
-    "npcs": []
+  "id": "chamber1",
+  "name": "Ancient Chamber",
+  "type": "chamber",
+  "description": "A dusty stone chamber with strange carvings.",
+  "exits": { "south": "hallway1" },
+  "items": [],
+  "features": [],
+  "npcs": ["dungeon_guide"]
 }

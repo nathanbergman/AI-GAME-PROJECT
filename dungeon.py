@@ -2,6 +2,8 @@ from file_manager import FileManager
 from item_system import ItemSystem
 from npc.npc_handler import NPCHandler
 import random
+from ai_systems.npc import NPCHandler
+
 #import npc_storage
 class Dungeon:
     def __init__(self, file_manager: FileManager = None):
@@ -40,6 +42,8 @@ class Dungeon:
                 room_data = self.file_manager.read_json(room_file)
                 if room_data:
                     rooms[room_data['id']] = room_data
+        self.rooms = rooms
+        self._add_missing_reverse_exits()
         return rooms
 
     def validate_room(self, room_data):
@@ -154,17 +158,37 @@ class Dungeon:
         except Exception as e:
             print(f"Error getting item {item_id}: {e}")
             return None
+
     def get_npc(self, npc_id):
         try:
-            
-            return npc_id
+            npc_obj = self.NPCHandler.get_npc(npc_id)
+            if npc_obj:
+                return {
+                    "name": npc_obj.name,
+                    "description": npc_obj.background,
+                    "personality": getattr(npc_obj, "personality", "")
+                }
         except Exception as e:
             print(f"Error getting npc {npc_id}: {e}")
-            return None
-    
+        return None
+
     def save_dynamic_rooms(self):
         for room_id, room in self.dynamic_rooms.items():
             try:
                 self.file_manager.write_json(f'dungeons/{room_id}.json', room)
             except Exception as e:
                 print(f"Error saving room {room_id}: {e}")
+
+    def _add_missing_reverse_exits(self):
+        protected = {"entrance", "hallway1", "chamber1"}
+        opp = {'north': 'south', 'south': 'north', 'east': 'west', 'west': 'east', 'up': 'down', 'down': 'up'}
+        for room in self.rooms.values():
+            if room['id'] in protected:
+                continue
+            for d, target in room.get('exits', {}).items():
+                if isinstance(target, str) and target in self.rooms:
+                    rev = opp[d]
+                    tgt = self.rooms[target]
+                    if room['id'] not in protected and rev not in tgt.get('exits', {}):
+                        tgt.setdefault('exits', {})[rev] = room['id']
+

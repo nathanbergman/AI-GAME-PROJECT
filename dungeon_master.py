@@ -16,11 +16,11 @@ import time
 class DungeonMaster:
     def __init__(self):
 
-        self.game_root = pathlib.Path(__file__).parent.parent
+        self.game_root = pathlib.Path(__file__).parent
         self.dungeons_dir = self.game_root / "data" / "dungeons"
         self.npcs_dir = self.game_root / "data" / "npcs"
         self.saves_dir = self.game_root / "saves"
-        self.file_manager = FileManager()
+        self.file_manager = FileManager(self.game_root)
         self.dungeon = Dungeon(self.file_manager)
         self.player = None
         self.dungeon = Dungeon()
@@ -28,7 +28,12 @@ class DungeonMaster:
         self.game_active = False
         self.room_generator = SmartDungeonGenerator(self.dungeon)
         self.discovered_rooms = set()
-        self.npc_handler = NPCHandler("data/npcs/npc_storage.json")
+        npc_file = self.file_manager.npcs_path / "npc_storage.json"
+        if not npc_file.exists():
+            npc_file.write_text("{}", encoding="utf-8")
+        self.npc_handler = NPCHandler(str(npc_file))
+        print("DEBUG npc_handler keys =", list(self.npc_handler.npcs.keys()))
+        print("DEBUG npc_file =", npc_file)
         self.quest_system = QuestGenerator(self.npc_handler)
         self.current_quest = None
         self.puzzle_system = PuzzleGenerator()
@@ -156,6 +161,7 @@ class DungeonMaster:
                     print(f"- {item['name']}")
 
         if 'npcs' in self.current_room and self.current_room['npcs']:
+            print("DEBUG current_room['npcs'] =", self.current_room['npcs'])
             print("\nYou see:")
             for npc_id in self.current_room['npcs']:
                 npc = self.dungeon.get_npc(npc_id)
@@ -166,6 +172,18 @@ class DungeonMaster:
             exits = list(self.current_room['exits'].keys())
             exit_text = ", ".join(exits[:-1]) + f" and {exits[-1]}" if len(exits) > 1 else exits[0]
             print(f"\nExits to the {exit_text}")
+
+    def _resolve_npc(self, key: str):
+        key_norm = key.lower().replace(" ", "_")
+        for npc_id in self.current_room.get("npcs", []):
+            npc_obj = self.npc_handler.get_npc(npc_id)
+            if not npc_obj:
+                continue
+            if npc_id == key_norm:
+                return npc_id
+            if npc_obj.name.lower().replace(" ", "_") == key_norm:
+                return npc_id
+        return None
 
     def process_command(self, command):
         cmd = command.lower().strip()
@@ -221,11 +239,19 @@ class DungeonMaster:
 
         # NPC Interactions
         elif cmd.startswith('talk to '):
-            npc_name = cmd[8:].strip()
-            return self.handle_npc_conversation(npc_name)
+            npc_raw = cmd[8:].strip()
+            npc_id = self._resolve_npc(npc_raw)
+            if npc_id:
+                return self.handle_npc_conversation(npc_id)
+            return f"No {npc_raw} here to talk to."
+
         elif cmd.startswith('ask '):
-            npc_name = cmd[4:].strip()
-            return self.handle_npc_question(npc_name)
+            npc_raw = cmd[4:].strip()
+            npc_id = self._resolve_npc(npc_raw)
+            if npc_id:
+                return self.handle_npc_question(npc_id)
+            return f"No {npc_raw} here to ask."
+
 
         # Quest System
         elif cmd == 'quest':
@@ -280,7 +306,7 @@ class DungeonMaster:
                 self.current_room = self.dungeon.get_room(next_room_id)
                 self.discovered_rooms.add(next_room_id)
 
-                print(f"\n=== {self.current_room['name'].upper()} ===")
+                #print(f"\n=== {self.current_room['name'].upper()} ===")
                 self.describe_current_room()
                 return ""
 

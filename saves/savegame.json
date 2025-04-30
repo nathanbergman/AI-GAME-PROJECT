@@ -1,19 +1,19 @@
 {
   "player": {
-    "name": "1",
-    "class": "Fighter",
-    "health": 140,
-    "max_health": 140,
+    "name": "Monkey",
+    "class": "Wizard",
+    "health": 100,
+    "max_health": 100,
     "base_attack": 10,
-    "base_defense": 7,
+    "base_defense": 5,
     "inventory": [],
     "experience": 0,
     "level": 1
   },
-  "current_room": "hallway_5590",
+  "current_room": "chamber1",
   "discovered_rooms": [
-    "hallway_5590",
     "entrance",
-    "hallway1"
+    "hallway1",
+    "chamber1"
   ]
 }

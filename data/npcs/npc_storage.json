@@ -10,5 +10,11 @@
     "background": "Orcish Guard",
     "personality": "Brusque but honest, dislikes small talk",
     "memories": []
+  },
+  "dungeon_guide": {
+    "name": "Dungeon Guide",
+    "background": "Old Explorer",
+    "personality": "Helpful and Friendly",
+    "memories": []
   }
 }

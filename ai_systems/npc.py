@@ -65,5 +65,13 @@ class NPCHandler:
         with open(self.file_path, 'w') as f:
             json.dump(data, f, indent=2)
 
-    def get_npc(self, npc_id: str) -> NPC:
-        return self.npcs.get(npc_id)
+    def get_npc(self, key: str):
+        key_norm = key.lower().replace(" ", "_")
+        if key_norm in self.npcs:
+            return self.npcs[key_norm]
+        for npc in self.npcs.values():
+            if npc.name.lower().replace(" ", "_") == key_norm:
+                return npc
+        return None
+
+
