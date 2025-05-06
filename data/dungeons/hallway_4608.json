@@ -1,0 +1,32 @@
+{
+  "name": "forgotten dwarven kingdom hallway",
+  "description": "A hallway in the forgotten dwarven kingdom.",
+  "features": [
+    "Strange markings",
+    "Unusual sounds",
+    "Odd smells"
+  ],
+  "mood": "eerie",
+  "id": "hallway_4608",
+  "type": "hallway",
+  "theme": "forgotten dwarven kingdom",
+  "depth": 5,
+  "items": [
+    "old coin"
+  ],
+  "npcs": [
+    {
+      "id": "npc_2056",
+      "name": "fleeing adventurer",
+      "dialogue": "Ask me about the forgotten dwarven kingdom",
+      "attitude": "friendly"
+    }
+  ],
+  "exits": {
+    "south": "fallback_7193",
+    "west": {
+      "type": "blocked",
+      "description": "collapsed passage to the west"
+    }
+  }
+}

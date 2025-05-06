@@ -55,7 +55,8 @@ class Player(Character):
         self.Classdata = class_data
         self.desc = self.Classdata["details"]["Description"]
         self.class_level_up(self.level)
-
+        for startingItem in self.Classdata['StartingEquipment']:
+            self.inventory.append(startingItem)
     def add_experience(self, amount):
         self.experience += amount
         if self.experience >= self.level * 100:
