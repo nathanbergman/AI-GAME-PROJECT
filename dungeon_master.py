@@ -514,7 +514,8 @@ Inventory:
   take/drop [item]      - Manage items
   use [item]            - Use consumables
   equip [item]          - Equip gear
-  examine [item]        - Inspect items
+  examine [item]        - Inspect 
+  Cast [Spell]          - cast a spell (you must discover them by trying different words)
 
 Character Sheet:
 sheet                   - Examine your character
