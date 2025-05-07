@@ -4,11 +4,13 @@ import time
 import random
 import json
 
+# Default model and retry settings
 OLLAMA_MODEL = "llama3.2"
 MAX_RETRIES = 3
-RETRY_DELAY = 2  # seconds
-MAX_MEMORY_EXCHANGES = 5
+RETRY_DELAY = 2  # seconds between retries
+MAX_MEMORY_EXCHANGES = 5  # max NPC memory
 
+# Default fallback responses if generation fails
 FALLBACK_RESPONSES = {
     "dialogue": [
         "I can't think of anything to say right now.",
@@ -32,9 +34,9 @@ FALLBACK_RESPONSES = {
     ]
 }
 
-NPC_MEMORY: Dict[str, List[Dict]] = {}  # {npc_id: [{"player": "...", "npc": "..."}]}
-ROOM_MEMORY: Dict[str, List[str]] = {}  # {room_id: ["generated_description"]}
-
+# Memory tracking for NPCs and rooms
+NPC_MEMORY: Dict[str, List[Dict]] = {}
+ROOM_MEMORY: Dict[str, List[str]] = {}
 
 def generate_structured_response(
         prompt: str,
@@ -43,19 +45,7 @@ def generate_structured_response(
         temperature: float = 0.7,
         max_length: int = 150
 ) -> Union[str, Dict, None]:
-    """
-    Enhanced query function with retries, format handling, and length control
-
-    Args:
-        prompt: Input prompt for the model
-        model: Which Ollama model to use
-        response_format: "text" or "json"
-        temperature: Creativity level (0.0-1.0)
-        max_length: Maximum response length in tokens
-
-    Returns:
-        Response text, parsed JSON, or None if failed
-    """
+    # Query Ollama model with retries
     for attempt in range(MAX_RETRIES):
         try:
             response = ollama.chat(
@@ -71,6 +61,7 @@ def generate_structured_response(
             )
             content = response['message']['content'].strip()
 
+            # Parse as JSON if requested
             if response_format == "json":
                 if content.startswith('```json'):
                     content = content[7:-3].strip()
@@ -85,7 +76,6 @@ def generate_structured_response(
     print("Max retries reached for Ollama query")
     return None
 
-
 def generate_dialogue(
         npc_name: str,
         npc_background: str,
@@ -93,22 +83,10 @@ def generate_dialogue(
         context: str = "",
         memory: List[Dict] = None
 ) -> str:
-    """
-    Generate contextual NPC dialogue with memory and personality
-
-    Args:
-        npc_name: Name/role of the NPC
-        npc_background: Background/character traits
-        player_input: What the player said
-        context: Current game situation
-        memory: Previous conversation turns
-
-    Returns:
-        Generated response or fallback
-    """
+    # Generate dialogue using context and memory
     memory_context = "\n".join(
         f"Player: {m['player']}\n{npc_name}: {m['npc']}"
-        for m in (memory or [])[-3:]  # Last 3 exchanges
+        for m in (memory or [])[-3:]
     )
 
     prompt = f"""Roleplay as {npc_name}, a {npc_background} in a fantasy RPG.
@@ -135,24 +113,13 @@ Player says: "{player_input}"
 
     return random.choice(FALLBACK_RESPONSES["dialogue"])
 
-
 def generate_room_content(
         room_type: str,
         theme: str,
         connected_rooms: List[str],
         existing_descriptions: List[str] = None
 ) -> Dict:
-    """
-    Generate comprehensive room content with thematic consistency
-
-    Returns:
-        Dict with:
-        - description
-        - name
-        - features
-        - mood
-        - lore (optional)
-    """
+    # Generate room description content in structured JSON format
     prompt = f"""Generate descriptive content for a {room_type} in a {theme} dungeon.
 
 Connected Rooms: {', '.join(connected_rooms[:3]) if connected_rooms else "None"}
@@ -186,16 +153,13 @@ Required JSON format:
             "mood": "eerie"
         }
 
-
 def interactive_dialogue(
         npc_id: str,
         npc_name: str,
         npc_background: str,
         context: str = ""
 ) -> None:
-    """
-    Start an interactive conversation with an NPC
-    """
+    # Handle interactive dialogue with memory and exit option
     if npc_id not in NPC_MEMORY:
         NPC_MEMORY[npc_id] = []
 
@@ -236,27 +200,18 @@ def interactive_dialogue(
                 memory
             )
             print(f"\n[{npc_name}]: {response}")
-
             NPC_MEMORY[npc_id].append({"player": player_input, "npc": response})
 
         except KeyboardInterrupt:
             print(f"\n[{npc_name}]: *looks confused*")
             break
 
-
 def generate_combat_action(
         enemy_type: str,
         combat_state: Dict,
         personality: str = "aggressive"
 ) -> str:
-    """
-    Generate AI-driven combat behavior
-
-    Args:
-        enemy_type: Type of enemy (goblin, skeleton, etc.)
-        combat_state: Current combat status
-        personality: Combat style (aggressive/defensive/tactical)
-    """
+    # Generate enemy action during combat using context
     prompt = f"""As a {enemy_type} in combat, choose your next action.
 
 Combat State:
@@ -271,26 +226,17 @@ Respond ONLY with the action choice."""
     if response and response.lower() in combat_state.get('actions', []):
         return response.lower()
 
+    # Fallback action
     if personality == "defensive":
         return random.choice(["block", "counter"])
     return random.choice(["attack", "special"])
-
 
 def generate_puzzle(
         theme: str,
         difficulty: str = "medium",
         puzzle_type: str = None
 ) -> Dict:
-    """
-    Generate a complete puzzle with solution and hints
-
-    Returns:
-        Dict with:
-        - description
-        - solution
-        - hints []
-        - reward
-    """
+    # Generate structured puzzle with hints and reward
     prompt = f"""Create a {difficulty} {puzzle_type or 'riddle'} puzzle for a {theme} dungeon.
 
 Format as JSON with:
@@ -315,22 +261,12 @@ Format as JSON with:
             "reward": "mysterious_key"
         }
 
-
 def generate_quest(
         npc_name: str,
         npc_role: str,
         player_level: int = 1
 ) -> Dict:
-    """
-    Generate a complete quest with objectives
-
-    Returns:
-        Dict with:
-        - title
-        - description
-        - objectives []
-        - reward
-    """
+    # Generate structured quest with objectives and reward
     prompt = f"""Create a quest for level {player_level} given by {npc_name}, a {npc_role}.
 
 Format as JSON with:
@@ -358,7 +294,7 @@ Format as JSON with:
         }
 
 def generate_room_description(room_type: str, existing_rooms: List[str]) -> str:
-    """Generate immersive room descriptions with contextual awareness"""
+    # Generate short, vivid room description
     prompt = f"""Generate a vivid 1-2 sentence description for a {room_type} in a fantasy dungeon.
 
 Connected Rooms: {', '.join(existing_rooms[:3]) if existing_rooms else "None"}
@@ -371,8 +307,8 @@ Requirements:
     response = generate_structured_response(prompt)
     return response or random.choice(FALLBACK_RESPONSES["description"])
 
-
 def generate_room_name(room_type: str, theme: str) -> str:
+    # Generate short room name (2–3 words)
     prompt = f"""Generate a short, punchy name (2-3 words max) for a {room_type} in a {theme} dungeon.
 
 Examples:

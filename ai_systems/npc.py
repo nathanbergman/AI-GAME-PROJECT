@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from typing import Dict, List
 import json
 
-
+# Define a simple data class to represent a Non-Player Character (NPC)
 @dataclass
 class NPC:
     id: str
@@ -18,6 +18,7 @@ class NPC:
     def talk(self, player_input: str = None) -> str:
         """Handle both interactive and single-turn dialogue"""
         if player_input is None:
+            # Launch a live dialogue loop with memory awareness
             interactive_dialogue(
                 npc_id=self.id,
                 npc_name=self.name,
@@ -25,12 +26,13 @@ class NPC:
             )
             return ""
         else:
+            # Generate a one-time response based on input and personality
             return generate_dialogue(
                 npc_name=self.name,
                 situation=f"Personality: {self.personality}. {player_input}"
             )
 
-
+# Class for managing multiple NPCs stored in a JSON file
 class NPCHandler:
     def __init__(self, file_path: str = "data/npcs/npc_storage.json"):
         self.npcs: Dict[str, NPC] = {}

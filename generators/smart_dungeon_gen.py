@@ -6,21 +6,20 @@ from dungeon import Dungeon
 from file_manager import FileManager
 from ollama_integration import generate_structured_response, generate_room_description
 
-
 class SmartDungeonGenerator:
     def __init__(self, dungeon: Dungeon):
-        self.dungeon = dungeon
-        self.file_manager = FileManager()
-        self.themes = [
+        self.dungeon = dungeon  # Reference to the main dungeon object
+        self.file_manager = FileManager()  # Used to read/write room files
+        self.themes = [  # Predefined dungeon themes
             "ancient cursed city",
             "forgotten dwarven kingdom",
             "volcanic caverns",
             "crystalline caves",
             "sunken elven ruins"
         ]
-        self.current_theme = random.choice(self.themes)
-        self.depth = 0
-        self.room_archetypes = {
+        self.current_theme = random.choice(self.themes)  # Randomly choose theme
+        self.depth = 0  # Depth of current room
+        self.room_archetypes = {  # Room types with spawn weights and exit ranges
             'chamber': {'weight': 40, 'exits': (2, 4)},
             'hallway': {'weight': 25, 'exits': (1, 2)},
             'treasure': {'weight': 10, 'exits': (1, 2)},
@@ -29,23 +28,21 @@ class SmartDungeonGenerator:
         }
 
     def generate_new_room(self, connecting_room_id: str, direction: str) -> Dict:
-        self.depth += 1
+        self.depth += 1  # Increase dungeon depth
         connecting_room = self.dungeon.get_room(connecting_room_id)
 
         try:
-            room_type = self._select_room_type(connecting_room)
+            room_type = self._select_room_type(connecting_room)  # Decide next room type
+            room_data = self._create_room_data(room_type, connecting_room)  # Generate base room info
 
-            room_data = self._create_room_data(room_type, connecting_room)
-
-            room_data['exits'] = self._generate_exits(
+            room_data['exits'] = self._generate_exits(  # Add exits to the room
                 room_data['id'],
                 connecting_room_id,
                 direction,
                 room_type
             )
 
-            self._populate_room(room_data)
-
+            self._populate_room(room_data)  # Add items, NPCs, puzzles
             self.file_manager.write_json(f"data/dungeons/{room_data['id']}.json", room_data)
             return room_data
 
@@ -54,21 +51,15 @@ class SmartDungeonGenerator:
             return self._create_fallback_room(connecting_room_id, direction)
 
     def _select_room_type(self, connecting_room: Dict) -> str:
+        # Ask AI to suggest a logical room type
         prompt = f"""Given dungeon theme '{self.current_theme}' at depth {self.depth},
 and previous room type '{connecting_room.get('type')}',
-select the most appropriate room type from {list(self.room_archetypes.keys())}.
-
-Consider:
-- Deeper rooms should be more dangerous
-- Maintain thematic consistency
-- Create logical progression
-
-Respond ONLY with the room type key."""
-
+select the most appropriate room type from {list(self.room_archetypes.keys())}."""
         try:
             response = generate_structured_response(prompt, temperature=0.3)
             return response.strip().lower()
         except:
+            # Fall back to random weighted selection
             return random.choices(
                 list(self.room_archetypes.keys()),
                 weights=[a['weight'] for a in self.room_archetypes.values()],
@@ -76,10 +67,11 @@ Respond ONLY with the room type key."""
             )[0]
 
     def _create_room_data(self, room_type: str, connecting_room: Dict) -> Dict:
+        # Get context from other rooms
         context_rooms = [
-                            r['name'] for r in self.dungeon.rooms.values()
-                            if r['id'] != connecting_room['id']
-                        ][-3:]
+            r['name'] for r in self.dungeon.rooms.values()
+            if r['id'] != connecting_room['id']
+        ][-3:]
 
         try:
             room_data = generate_room_description(
@@ -88,8 +80,9 @@ Respond ONLY with the room type key."""
                 context_rooms
             )
         except:
-            room_data = self._basic_room_data(room_type)
+            room_data = self._basic_room_data(room_type)  # Use fallback if AI fails
 
+        # Finalize room structure
         room_data.update({
             'id': f"{room_type}_{random.randint(1000, 9999)}",
             'type': room_type,
@@ -105,13 +98,13 @@ Respond ONLY with the room type key."""
     def _generate_exits(self, room_id: str, connecting_id: str,
                         direction: str, room_type: str) -> Dict:
         opposites = {'north': 'south', 'south': 'north', 'east': 'west', 'west': 'east'}
-        exits = {opposites[direction]: connecting_id}
+        exits = {opposites[direction]: connecting_id}  # Connect back to previous room
 
         min_exits, max_exits = self.room_archetypes[room_type]['exits']
         target_exits = random.randint(min_exits, max_exits)
 
         if self.depth > 5:
-            target_exits = min(target_exits + 1, 4)
+            target_exits = min(target_exits + 1, 4)  # Slightly more exits for deeper rooms
 
         possible_directions = [d for d in ['north', 'south', 'east', 'west']
                                if d != opposites[direction]]
@@ -124,9 +117,9 @@ Respond ONLY with the room type key."""
 
             rand = random.random()
             if rand < 0.6:
-                exits[new_dir] = f"unexplored_{new_dir}_{room_id}"
+                exits[new_dir] = f"unexplored_{new_dir}_{room_id}"  # Normal exit
             elif rand < 0.9:
-                exits[new_dir] = {
+                exits[new_dir] = {  # Hidden exit
                     'type': 'hidden',
                     'clue': random.choice([
                         f"faint draft from the {new_dir}",
@@ -134,7 +127,7 @@ Respond ONLY with the room type key."""
                     ])
                 }
             else:
-                exits[new_dir] = {
+                exits[new_dir] = {  # Blocked path
                     'type': 'blocked',
                     'description': f"collapsed passage to the {new_dir}"
                 }
@@ -144,15 +137,16 @@ Respond ONLY with the room type key."""
         return exits
 
     def _populate_room(self, room_data: Dict):
-        room_data['items'] = self._generate_items(room_data['type'])
+        room_data['items'] = self._generate_items(room_data['type'])  # Add items
 
         if random.random() < 0.4:
-            room_data['npcs'] = self._generate_npcs(room_data['type'])
+            room_data['npcs'] = self._generate_npcs(room_data['type'])  # Maybe add NPCs
 
         if room_data['type'] in ['shrine', 'treasure'] and random.random() < 0.3:
-            room_data['puzzle'] = self._generate_puzzle()
+            room_data['puzzle'] = self._generate_puzzle()  # Add puzzle sometimes
 
     def _generate_items(self, room_type: str) -> List[str]:
+        # Predefined item sets by room type
         item_lists = {
             'chamber': ['torch', 'journal', 'broken weapon'],
             'hallway': ['pebble', 'old coin', 'rusty key'],
@@ -167,6 +161,7 @@ Respond ONLY with the room type key."""
         return items
 
     def _generate_npcs(self, room_type: str) -> List[Dict]:
+        # Predefined NPC sets by room type
         npc_types = {
             'chamber': ['lost explorer', 'undead guardian'],
             'hallway': ['patrolling creature', 'fleeing adventurer'],
@@ -183,6 +178,7 @@ Respond ONLY with the room type key."""
         }]
 
     def _generate_puzzle(self) -> Dict:
+        # Simple hardcoded puzzles
         puzzles = [
             {
                 'description': "A riddle is inscribed on the wall",
@@ -200,6 +196,7 @@ Respond ONLY with the room type key."""
         return random.choice(puzzles)
 
     def _basic_room_data(self, room_type: str) -> Dict:
+        # Fallback room description
         return {
             'name': f"{self.current_theme} {room_type}",
             'description': f"A {room_type} in the {self.current_theme}.",
@@ -212,6 +209,7 @@ Respond ONLY with the room type key."""
         }
 
     def _create_fallback_room(self, connecting_id: str, direction: str) -> Dict:
+        # Room created if generation fails
         opposites = {'north': 'south', 'south': 'north', 'east': 'west', 'west': 'east'}
         return {
             'id': f"fallback_{random.randint(1000, 9999)}",
