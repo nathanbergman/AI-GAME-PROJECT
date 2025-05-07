@@ -3,14 +3,15 @@ import os
 
 class ItemSystem:
     def __init__(self, items_file=None):
-        self.items_file = items_file
+        self.items_file = items_file  # Optional file path for loading/saving items
         self.items = {}
         if self.items_file and os.path.exists(self.items_file):
-            self.load_items_from_file(self.items_file)
+            self.load_items_from_file(self.items_file)  # Load items from file if available
         else:
-            self.initialize_default_items()
+            self.initialize_default_items()  # Fallback to default item set
 
     def initialize_default_items(self):
+        # Define default in-memory item database
         self.items = {
             'torch': {
                 'id': 'torch',
@@ -49,13 +50,15 @@ class ItemSystem:
         }
 
     def load_items_from_file(self, filename):
+        # Load items from a JSON file
         try:
             with open(filename, 'r', encoding='utf-8') as f:
                 self.items = json.load(f)
         except Exception:
-            self.initialize_default_items()
+            self.initialize_default_items()  # Fallback on error
 
     def save_items_to_file(self, filename=None):
+        # Save items to a file (use default path if not specified)
         target_file = filename or self.items_file
         if not target_file:
             return False
@@ -67,9 +70,11 @@ class ItemSystem:
             return False
 
     def get_item(self, item_id):
+        # Retrieve an item by its ID
         return self.items.get(item_id)
 
     def add_item(self, item_data):
+        # Add a new item to the system
         item_id = item_data.get('id')
         if not item_id:
             return False
@@ -77,16 +82,19 @@ class ItemSystem:
         return True
 
     def remove_item(self, item_id):
+        # Remove an item by ID
         if item_id in self.items:
             del self.items[item_id]
             return True
         return False
 
     def update_item(self, item_id, updates):
+        # Update fields of an existing item
         if item_id not in self.items:
             return False
         self.items[item_id].update(updates)
         return True
 
     def list_items(self):
+        # List all item IDs
         return list(self.items.keys())

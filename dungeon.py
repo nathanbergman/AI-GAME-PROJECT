@@ -2,20 +2,19 @@ from file_manager import FileManager
 from item_system import ItemSystem
 from npc.npc_handler import NPCHandler
 import random
-from ai_systems.npc import NPCHandler
+from ai_systems.npc import NPCHandler  # Possible duplicate import
 
-#import npc_storage
 class Dungeon:
     def __init__(self, file_manager: FileManager = None):
-        self.file_manager = file_manager or FileManager()
-        self.rooms = self.load_rooms()
-        self.item_system = ItemSystem()
-        self.NPCHandler = NPCHandler()
-        self.dynamic_rooms = {}
-        self._ensure_entrance_exists()
-        
+        self.file_manager = file_manager or FileManager()  # Setup file manager
+        self.rooms = self.load_rooms()  # Load all saved rooms
+        self.item_system = ItemSystem()  # Handles item retrieval
+        self.NPCHandler = NPCHandler()  # Handles NPC loading
+        self.dynamic_rooms = {}  # Holds newly generated or fallback rooms
+        self._ensure_entrance_exists()  # Guarantee entrance exists
 
     def _ensure_entrance_exists(self):
+        # Ensure dungeon has an entrance room
         if "entrance" not in self.rooms:
             print("Warning: Entrance room not found - creating default")
             entrance = {
@@ -32,6 +31,7 @@ class Dungeon:
             self.file_manager.write_json("entrance.json", entrance)
 
     def load_rooms(self) -> dict:
+        # Load all rooms from file and return dictionary
         rooms = {}
         entrance_data = self.file_manager.read_json("entrance.json")
         if entrance_data:
@@ -42,11 +42,13 @@ class Dungeon:
                 room_data = self.file_manager.read_json(room_file)
                 if room_data:
                     rooms[room_data['id']] = room_data
+
         self.rooms = rooms
         self._add_missing_reverse_exits()
         return rooms
 
     def validate_room(self, room_data):
+        # Validate and complete a room’s required fields
         required_fields = {
             'id': lambda: room_data['id'],
             'type': lambda: room_data.get('type', 'chamber'),
@@ -61,6 +63,7 @@ class Dungeon:
         return {field: validator() for field, validator in required_fields.items()}
 
     def validate_connections(self, rooms):
+        # Validate that room exits point to valid destinations
         for room_id, room in rooms.items():
             valid_exits = {}
             for direction, target_id in room.get('exits', {}).items():
@@ -73,6 +76,7 @@ class Dungeon:
             room['exits'] = valid_exits
 
     def get_room(self, room_id):
+        # Retrieve a room from static or dynamic data
         room = self.rooms.get(room_id) or self.dynamic_rooms.get(room_id)
 
         if not room:
@@ -89,6 +93,7 @@ class Dungeon:
             }
             self.dynamic_rooms[room_id] = room
 
+        # If no exits are defined, generate an unexplored one
         if not room.get('exits') and room.get('type') not in ['treasure', 'shrine']:
             direction = random.choice(['north', 'south', 'east', 'west'])
             room['exits'][direction] = f"unexplored_{direction}_{room_id}"
@@ -96,12 +101,14 @@ class Dungeon:
         return room
 
     def generate_fallback_exits(self, room_id):
+        # Randomly generate 1–2 unexplored exits
         exits = {}
         for direction in random.sample(['north', 'south', 'east', 'west'], random.randint(1, 2)):
             exits[direction] = f"unexplored_{direction}_{room_id}"
         return exits
 
     def create_fallback_room(self, room_id, name):
+        # Manually create a generic fallback room
         fallback = {
             'id': room_id,
             'type': 'chamber',
@@ -116,12 +123,14 @@ class Dungeon:
         return fallback
 
     def add_dynamic_room(self, room_data):
+        # Add room to dynamic cache
         if not hasattr(self, 'dynamic_rooms'):
             self.dynamic_rooms = {}
         self.dynamic_rooms[room_data['id']] = room_data
         return room_data
 
     def connect_rooms(self, room1_id, room2_id, direction):
+        # Link two rooms in opposite directions
         try:
             room1 = self.get_room(room1_id)
             room2 = self.get_room(room2_id)
@@ -142,6 +151,7 @@ class Dungeon:
 
     @staticmethod
     def get_opposite_direction(direction):
+        # Return the opposite direction for bidirectional links
         opposites = {
             'north': 'south',
             'south': 'north',
@@ -153,6 +163,7 @@ class Dungeon:
         return opposites.get(direction.lower(), direction)
 
     def get_item(self, item_id):
+        # Retrieve item data by ID
         try:
             return self.item_system.get_item(item_id)
         except Exception as e:
@@ -160,6 +171,7 @@ class Dungeon:
             return None
 
     def get_npc(self, npc_id):
+        # Retrieve NPC data and return basic summary
         try:
             npc_obj = self.NPCHandler.get_npc(npc_id)
             if npc_obj:
@@ -173,6 +185,7 @@ class Dungeon:
         return None
 
     def save_dynamic_rooms(self):
+        # Save all dynamically created rooms to disk
         for room_id, room in self.dynamic_rooms.items():
             try:
                 self.file_manager.write_json(f'dungeons/{room_id}.json', room)
@@ -180,6 +193,7 @@ class Dungeon:
                 print(f"Error saving room {room_id}: {e}")
 
     def _add_missing_reverse_exits(self):
+        # Auto-add reverse exits for existing room connections
         protected = {"entrance", "hallway1", "chamber1"}
         opp = {'north': 'south', 'south': 'north', 'east': 'west', 'west': 'east', 'up': 'down', 'down': 'up'}
         for room in self.rooms.values():
@@ -191,4 +205,3 @@ class Dungeon:
                     tgt = self.rooms[target]
                     if room['id'] not in protected and rev not in tgt.get('exits', {}):
                         tgt.setdefault('exits', {})[rev] = room['id']
-
