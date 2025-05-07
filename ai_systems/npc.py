@@ -69,10 +69,14 @@ class NPCHandler:
 
     def get_npc(self, key: str):
         key_norm = key.lower().replace(" ", "_")
+        #key_norm = key
+        #key_norm = key.replace(" ", "_")
+
         if key_norm in self.npcs:
             return self.npcs[key_norm]
         for npc in self.npcs.values():
             if npc.name.lower().replace(" ", "_") == key_norm:
+            #if npc.name.replace(" ", "_") == key_norm:
                 return npc
         return None
 

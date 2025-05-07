@@ -1,0 +1,24 @@
+{
+  "name": "forgotten dwarven kingdom hallway",
+  "description": "A hallway in the forgotten dwarven kingdom.",
+  "features": [
+    "Strange markings",
+    "Unusual sounds",
+    "Odd smells"
+  ],
+  "mood": "eerie",
+  "id": "hallway_4326",
+  "type": "hallway",
+  "theme": "forgotten dwarven kingdom",
+  "depth": 1,
+  "items": [
+    "pebble",
+    "old coin",
+    "rusty key"
+  ],
+  "npcs": [],
+  "exits": {
+    "south": "chamber1",
+    "north": "fallback_7193"
+  }
+}

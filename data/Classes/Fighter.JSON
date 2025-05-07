@@ -1,18 +1,57 @@
 {
   "details": {
     "Description": "Soldier that is on the front lines",
-    "max_Level": 1,
+    "max_Level": 5,
     "Name": "Fighter"
   },
   "LevelUps": [
     {
-      "message":  "Level 0 has no data"
-      
+      "message": "Level 0 has no data"
+
     },
     {
       "attack": 0,
       "defense": 2,
       "health": 40
+    },
+    {
+      "attack": 0,
+      "defense": 2,
+      "health": 40
+    },
+    {
+      "attack": 1,
+      "defense": 0,
+      "health": 40
+    },
+    {
+      "attack": 0,
+      "defense": 2,
+      "health": 80
+    },
+    {
+      "attack": 0,
+      "defense": 0,
+      "health": 40
+    }
+  ],
+  "StartingEquipment": [
+    {
+      "id": "sword",
+      "name": "Sword",
+      "description": "An sword that might be effective in combat.",
+      "type": "weapon",
+      "attack_bonus": 2,
+      "equippable": "True",
+      "usable": "False"
+    },
+    {
+      "id": "gold_coins",
+      "name": "Gold Coins",
+      "description": "A pile of glittering gold coins.",
+      "type": "misc",
+      "usable": "False",
+      "value": 10
     }
   ]
 }

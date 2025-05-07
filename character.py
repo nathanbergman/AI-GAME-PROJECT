@@ -61,7 +61,9 @@ class Player(Character):
             raise FileNotFoundError(f"Class file not found: {class_filename}")
         self.Classdata = class_data
         self.desc = self.Classdata["details"]["Description"]
-        self.class_level_up(self.level)  # Apply initial level bonuses
+        self.class_level_up(self.level)
+        for startingItem in self.Classdata['StartingEquipment']:
+            self.inventory.append(startingItem)
 
     def add_experience(self, amount):
         # Add XP and check for level up

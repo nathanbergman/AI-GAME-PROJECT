@@ -1,0 +1,18 @@
+{
+  "id": "fallback_6903",
+  "type": "chamber",
+  "name": "Collapsed Passage",
+  "description": "This area shows signs of structural damage.",
+  "exits": {
+    "west": "chamber1"
+  },
+  "items": [
+    "torch"
+  ],
+  "npcs": [],
+  "features": [
+    "cracked walls",
+    "loose stones"
+  ],
+  "depth": 3
+}

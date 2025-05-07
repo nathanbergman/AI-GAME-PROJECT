@@ -175,7 +175,9 @@ class DungeonMaster:
 
     def _resolve_npc(self, key: str):
         key_norm = key.lower().replace(" ", "_")
+
         for npc_id in self.current_room.get("npcs", []):
+            
             npc_obj = self.npc_handler.get_npc(npc_id)
             if not npc_obj:
                 continue
