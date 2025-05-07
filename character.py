@@ -47,6 +47,9 @@ class Player(Character):
         self.quests = []
         self.max_mana = 0
         self.mana = 0
+        #attack and health that will be removed on a rest
+        self.floatingA = 0
+        self.floatingD = 0
         self.className = player_class
         class_filename = f"{player_class}.JSON"
         class_data = self.file_manager.read_json(self.file_manager.classes_path, class_filename)

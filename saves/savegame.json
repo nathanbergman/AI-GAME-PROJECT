@@ -1,28 +1,19 @@
 {
   "player": {
-    "name": "1",
-    "class": "Fighter",
-    "health": 140,
-    "max_health": 140,
+    "name": "2",
+    "class": "Wizard",
+    "health": 70,
+    "max_health": 70,
     "base_attack": 10,
-    "base_defense": 7,
+    "base_defense": 15,
     "inventory": [
-      {
-        "id": "sword",
-        "name": "Sword",
-        "description": "An sword that might be effective in combat.",
-        "type": "weapon",
-        "attack_bonus": 2,
-        "equippable": "True",
-        "usable": "False"
-      },
       {
         "id": "gold_coins",
         "name": "Gold Coins",
         "description": "A pile of glittering gold coins.",
         "type": "misc",
         "usable": "False",
-        "value": 10
+        "value": 15
       }
     ],
     "experience": 0,

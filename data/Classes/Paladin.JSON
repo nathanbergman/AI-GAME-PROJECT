@@ -1,20 +1,63 @@
 {
-  
-    "details": {
-      "Description": "Blessed crusader meant to destory evil and undead",
-      "max_Level": 1,
-      "Name": "Paladin"
-    },
-    "LevelUps": [
-      {
-        "message": "Level 0 has no data"
 
-      },
-      {
-        "attack": 0,
-        "defense": 1,
-        "health": 20,
-        "mana": 5
-      }
-    ]
-  }
+  "details": {
+    "Description": "Blessed crusader meant to destory evil and undead",
+    "max_Level": 5,
+    "Name": "Paladin"
+  },
+  "LevelUps": [
+    {
+      "message": "Level 0 has no data"
+
+    },
+    {
+      "attack": 0,
+      "defense": 1,
+      "health": 20,
+      "mana": 5
+    },
+    {
+      "attack": 0,
+      "defense": 1,
+      "health": 20,
+      "mana": 5
+    },
+    {
+      "attack": 0,
+      "defense": 1,
+      "health": 20,
+      "mana": 5
+    },
+    {
+      "attack": 0,
+      "defense": 1,
+      "health": 20,
+      "mana": 5
+    },
+    {
+      "attack": 0,
+      "defense": 1,
+      "health": 20,
+      "mana": 5
+    }
+  ],
+  "StartingEquipment": [
+    {
+      "id": "sword",
+      "name": "Sword",
+      "description": "An sword that might be effective in combat.",
+      "type": "weapon",
+      "attack_bonus": 2,
+      "equippable": "True",
+      "usable": "False"
+    },
+    {
+      "id": "gold_coins",
+      "name": "Gold Coins",
+      "description": "A pile of glittering gold coins.",
+      "type": "misc",
+      "usable": "False",
+      "value": 5
+    }
+  ]
+}

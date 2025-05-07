@@ -10,6 +10,7 @@ from ai_systems.npc import NPCHandler
 from ai_systems.quests import Quest, QuestGenerator
 from ai_systems.puzzles import PuzzleGenerator
 from ai_systems.combat import TacticalCombatAI
+from Spell_system import SpellSystem
 import random
 import time
 
@@ -39,7 +40,7 @@ class DungeonMaster:
         self.puzzle_system = PuzzleGenerator()
         self.combat_ai = TacticalCombatAI()
         self.combat_active = False
-
+        
     def start_new_game(self):
         print("\n=== DUNGEON ADVENTURE ===")
         print("A text adventure of exploration and mystery\n")
@@ -64,7 +65,7 @@ class DungeonMaster:
         self.current_room = self.dungeon.get_room("entrance")
         self.game_active = True
         self.discovered_rooms = {self.current_room['id']}
-
+        self.SpellSystem = SpellSystem(self.player)
         print(f"\nWelcome, {player_name}! Your adventure begins...")
         time.sleep(1)
         print("You find yourself standing at the entrance to a long-forgotten dungeons.")
@@ -102,6 +103,7 @@ class DungeonMaster:
 
             self.dungeon = Dungeon()
             self.room_generator = SmartDungeonGenerator(self.dungeon)
+            self.SpellSystem = SpellSystem(self.player)
 
             if 'discovered_rooms' in data:
                 for room_id in data['discovered_rooms']:
@@ -117,9 +119,10 @@ class DungeonMaster:
             if not self.current_room:
                 print("Warning: Saved room not found. Starting from entrance.")
                 self.current_room = self.dungeon.get_room("entrance")
-
+                
             self.game_active = True
             self.discovered_rooms = set(data.get('discovered_rooms', [self.current_room['id']]))
+
 
             print("\nGame loaded successfully!")
             time.sleep(1)
@@ -221,6 +224,9 @@ class DungeonMaster:
             return self.equip_item(cmd[6:].strip())
         elif cmd.startswith('examine '):
             return self.examine_item(cmd[8:].strip())
+        elif cmd.startswith('cast '):
+            return self.cast_spell(cmd[5:].strip())
+        
         #character Sheet
         elif cmd == 'sheet':
             return self.show_sheet()
@@ -608,12 +614,13 @@ Tip: Many commands can be abbreviated (n/s/e/w, inv, exa)
             ])
 
     def rest_action(self):
-            if self.player.health >= self.player.max_health:
-                return "You don't need to rest right now."
+            
 
             recovery = min(15, self.player.max_health - self.player.health)
             self.player.health += recovery
-
+            self.player.base_attack -= self.player.floatingA
+            self.player.base_defense -= self.player.floatingD
+            self.player.mana = self.player.max_mana
             room_type = self.current_room.get('type', 'chamber')
             descriptions = {
                 'chamber': "You sit against the cold stone wall and catch your breath.",
@@ -623,7 +630,7 @@ Tip: Many commands can be abbreviated (n/s/e/w, inv, exa)
                 'cavern': "The quiet drip of water accompanies your rest."
             }
 
-            return f"{descriptions.get(room_type, 'You take a moment to rest.')}\nRecovered {recovery} HP."
+            return f"{descriptions.get(room_type, 'You take a moment to rest.')}\nRecovered {recovery} HP and {self.player.mana} mana."
 
     def show_stats(self):
             attack = self.player.base_attack
@@ -813,7 +820,8 @@ Tip: Many commands can be abbreviated (n/s/e/w, inv, exa)
         if save_game(save_data):
             return "Game saved successfully!"
         return "Failed to save game."
-
+    def cast_spell(self, spellName):
+        self.SpellSystem.cast_spell(spellName)
     def show_map(self):
         if not self.discovered_rooms:
             return "You haven't discovered any areas yet."
